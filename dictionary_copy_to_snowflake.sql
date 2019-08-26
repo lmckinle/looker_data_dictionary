@@ -1,10 +1,10 @@
-snowsql -a disneyanalytics -u SVC_DEV_SNOW_ETL_DIGITAL 
--r DVDM_DB_DEV_RESTRICTED_READ_ONLY -d DVDM_DB_DEV -w DVDM_WH_DEV_XL -s TMP
+snowsql -a {specify_account_name} -u {specify_username} -r {specify_role_name} -d {specify_database_name} -w {specify_warehouse} -s {specify_schema}
 
 
-drop table if exists tmp.looker_data_dictionary;
+drop table if exists {specify table name as schema.table like tmp.looker_data_dictionary};
 
-CREATE TABLE if not exists tmp.looker_data_dictionary(
+CREATE TABLE if not exists {schema.table}(
+# Add or remove fields as needed
 connection_name VARCHAR(16777216),
 field_type VARCHAR(16777216),
 project VARCHAR(16777216),
@@ -24,13 +24,11 @@ value_format VARCHAR(16777216),
 source VARCHAR(16777216)
 );
 
-put file://~/Documents/{YOUR_FILE_PATH_HERE}/dictionary.csv @%looker_data_dictionary;
+put file://~/{YOUR_FILE_PATH_HERE}/dictionary.csv @%looker_data_dictionary;
 
-COPY INTO tmp.looker_data_dictionary
+COPY INTO schema.table
         FROM @%looker_data_dictionary
+        # You file_format may be different, read the snowsql documentation
         FILE_FORMAT = (TYPE = CSV skip_header = 1 EMPTY_FIELD_AS_NULL = TRUE, field_delimiter = ',' field_optionally_enclosed_by='"');
-
--- snowsql -a disneyanalytics -u SVC_PROD_SNOW_ETL_DIGITAL -r DIGITAL_PROD_RESTRICTED_ETL -d DVDM_DB_PROD -w DVDM_WH_PROD_XL -s TMP;
-
 
 

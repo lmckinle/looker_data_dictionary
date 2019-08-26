@@ -1,0 +1,9 @@
+# gitignore this file!
+#rename config.yml
+
+hosts:
+  'localhost':
+    host: 'https://{host name here}:19999/api/3.1/'
+    secret: '{your secret here}'
+    token: '{your token here}'
+
